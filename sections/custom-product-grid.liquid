@@ -1,13 +1,16 @@
-<div class="product-grid-section section" id="product-grid">
-  <h2 class="section-title">
-    {{ section.settings.title }}
-  </h2>
+<div class="product-grid-section" id="product-grid-section">
+  <h2 class="section-title">{{ section.settings.title }}</h2>
   <div class="product-grid">
     {% for block in section.blocks %}
       {% assign product = all_products[block.settings.product] %}
-      <div class="product-item" data-product-id="{{product.id}}">
+      <div class="product-item" 
+        data-product-id="{{ product.id }}"
+        data-product-title="{{ product.title | escape }}"
+        data-product-price="{{ product.price | money }}"
+        data-product-url="{{ product.url }}"
+        data-product-handle="{{ product.handle }}">
         <div class="product-image-container">
-          {%- if product.featured_media -%}
+          {% if product.featured_media %}
             <img
               src="{{ product.featured_media | image_url: width: 600 }}"
               alt="{{ product.featured_media.alt | escape }}"
@@ -15,17 +18,9 @@
               loading="lazy"
               width="600"
               height="600">
-          {%- endif -%}
-           {%- else -%}
+          {% else %}
             {{ 'product-1' | placeholder_svg_tag: 'product-image placeholder' }}
-          {%- endif -%}
-          <button
-            class="quick-view-button"
-            data-product-id="{{product.id}}"
-            data-product-handle="{{product.handle}}"
-            aria-label="Quick view {{product.title}}">
-            <span class="plus-icon">+</span>
-          </button>
+          {% endif %}
         </div>
         <div class="product-info">
           <h3 class="product-title">{{ product.title }}</h3>
@@ -34,65 +29,175 @@
       </div>
     {% endfor %}
   </div>
-  <!-- Quick View Modal -->
-  <div class="quick-view-modal" id="quickViewModal">
-    <div class="modal-content">
-      <button class="close-modal">x</button>
-      <div class="modal-body">
-        <!-- Content will be loaded dynamically here -->
-      </div>
+</div>
+
+<!-- Product Quick View Modal -->
+<div id="quick-view-modal" class="modal">
+  <div class="modal-content">
+    <span class="close-modal">&times;</span>
+    <div class="modal-body">
+      <h2 id="modal-product-title"></h2>
+      <p id="modal-product-price"></p>
+      <div id="modal-product-description"></div>
+      <form id="add-to-cart-form" class="product-form">
+        <div id="product-variants"></div>
+        <button type="submit" class="add-to-cart-button">ADD TO CART</button>
+      </form>
     </div>
   </div>
 </div>
+
 {% schema %}
-  {
-    "name": "Product Grid",
-    "settings": [
-      {
-        "type": "text",
-        "id": "title",
-        "label": "Section Title",
-        "default": "Tisso vision in the wild"
-      }
-    ],
-    "blocks": [
-      {
-        "type": "product",
-        "name": "Product",
-        "settings": [
-          {
-            "type": "product",
-            "id": "product",
-            "label": "Product"
-          }
-        ]
-      }
-    ],
-    "max_blocks": 6,
-    "presets": [
-      {
-        "name": "Product Grid",
-        "blocks": [
-          {
-            "type": "product"
-          },
-          {
-            "type": "product"
-          },
-          {
-            "type": "product"
-          },
-          {
-            "type": "product"
-          },
-          {
-            "type": "product"
-          },
-          {
-            "type": "product"
-          }
-        ]
-      }
-    ]
-  }
+{
+  "name": "Custom Product Grid",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "Featured Products"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "Custom Product Grid",
+      "blocks": [
+        {
+          "type": "product"
+        },
+        {
+          "type": "product"
+        },
+        {
+          "type": "product"
+        }
+      ]
+    }
+  ]
+}
 {% endschema %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const modal = document.getElementById('quick-view-modal');
+  const closeBtn = document.querySelector('.close-modal');
+  const productItems = document.querySelectorAll('.product-item');
+  const addToCartForm = document.getElementById('add-to-cart-form');
+  const winterJacketHandle = 'soft-winter-jacket'; // Update this with actual handle
+
+  // Close modal when clicking X or outside
+  closeBtn.onclick = () => modal.style.display = 'none';
+  window.onclick = (e) => {
+    if (e.target == modal) modal.style.display = 'none';
+  }
+
+  // Product click handler
+  productItems.forEach(item => {
+    item.addEventListener('click', async () => {
+      const productHandle = item.dataset.productHandle;
+      
+      // Fetch product data
+      const response = await fetch(`/products/${productHandle}.js`);
+      const product = await response.json();
+      
+      // Update modal content
+      document.getElementById('modal-product-title').textContent = product.title;
+      document.getElementById('modal-product-price').textContent = item.dataset.productPrice;
+      document.getElementById('modal-product-description').innerHTML = product.description;
+      
+      // Generate variant options
+      const variantsContainer = document.getElementById('product-variants');
+      variantsContainer.innerHTML = '';
+      
+      product.options_with_values.forEach(option => {
+        const select = document.createElement('select');
+        select.name = `options[${option.name}]`;
+        select.className = 'variant-select';
+        
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = `Select ${option.name}`;
+        select.appendChild(defaultOption);
+        
+        option.values.forEach(value => {
+          const optionEl = document.createElement('option');
+          optionEl.value = value;
+          optionEl.textContent = value;
+          select.appendChild(optionEl);
+        });
+        
+        const label = document.createElement('label');
+        label.textContent = option.name;
+        
+        const container = document.createElement('div');
+        container.className = 'variant-option';
+        container.appendChild(label);
+        container.appendChild(select);
+        variantsContainer.appendChild(container);
+      });
+      
+      modal.style.display = 'block';
+    });
+  });
+
+  // Add to cart handler
+  addToCartForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const variantSelects = document.querySelectorAll('.variant-select');
+    const selectedOptions = Array.from(variantSelects).map(select => select.value);
+    
+    // Check if Black and Medium are selected
+    const hasBlackAndMedium = selectedOptions.includes('Black') && selectedOptions.includes('Medium');
+    
+    try {
+      // Add main product
+      const formData = new FormData(addToCartForm);
+      await fetch('/cart/add.js', {
+        method: 'POST',
+        body: formData
+      });
+      
+      // If Black and Medium selected, add winter jacket
+      if (hasBlackAndMedium) {
+        const winterJacketResponse = await fetch(`/products/${winterJacketHandle}.js`);
+        const winterJacket = await winterJacketResponse.json();
+        
+        await fetch('/cart/add.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            items: [{
+              id: winterJacket.variants[0].id,
+              quantity: 1
+            }]
+          })
+        });
+      }
+      
+      // Close modal and refresh cart
+      modal.style.display = 'none';
+      // Trigger cart refresh - implement based on your theme's cart system
+      
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+    }
+  });
+});
+</script>
