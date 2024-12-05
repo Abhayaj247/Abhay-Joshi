@@ -74,6 +74,35 @@
   --shadow-visible: var(--media-shadow-visible);
 }
 
+/* Inter Font */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('{{ "inter-regular.woff2" | asset_url }}') format('woff2'),
+       url('{{ "inter-regular.woff" | asset_url }}') format('woff');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('{{ "inter-medium.woff2" | asset_url }}') format('woff2'),
+       url('{{ "inter-medium.woff" | asset_url }}') format('woff');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('{{ "inter-semibold.woff2" | asset_url }}') format('woff2'),
+       url('{{ "inter-semibold.woff" | asset_url }}') format('woff');
+}
+
+
 /* base */
 
 .page-width {

@@ -1,0 +1,95 @@
+<div class="product-grid-section section" id="product-grid">
+  <h2 class="section-title">
+    {{ section.settings.title }}
+  </h2>
+  <div class="product-grid">
+    {% for block in section.blocks %}
+      {% assign product = all_products[block.settings.product] %}
+      <div class="product-item" data-product-id="{{product.id}}">
+        <div class="product-image-container">
+          {%- if product.featured_media -%}
+            {{ product.featured_media | image_url: width: 600 | image_tag:
+ loading: 'lazy',
+ width: 600,
+ height: 600,
+ sizes: '(min-width: 1200px) 33vw, (min-width: 750px) 50vw, 100vw',
+ widths: '275, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840'
+            }}
+          {%- endif -%}
+          <button
+            class="quick-view-button"
+            data-product-id="{{product.id}}"
+            data-product-handle="{{product.handle}}"
+            aria-label="Quick view {{product.title}}">
+            <img
+              src="{{ 'icon-plus.svg' | asset_url }}"
+              alt="PLus icon"
+              width="437"
+              height="294" />
+          </button>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  <!-- Quick View Modal -->
+  <div class="quick-view-modal" id="quickViewModal">
+    <div class="modal-content">
+      <button class="close-modal">x</button>
+      <div class="modal-body">
+        <!-- Content will be loaded dynamically here -->
+      </div>
+    </div>
+  </div>
+</div>
+{% schema %}
+  {
+    "name": "Product Grid",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Section Title",
+        "default": "Tisso vision in the wild"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "product",
+        "name": "Product",
+        "settings": [
+          {
+            "type": "product",
+            "id": "product",
+            "label": "Product"
+          }
+        ]
+      }
+    ],
+    "max_blocks": 6,
+    "presets": [
+      {
+        "name": "Product Grid",
+        "blocks": [
+          {
+            "type": "product"
+          },
+          {
+            "type": "product"
+          },
+          {
+            "type": "product"
+          },
+          {
+            "type": "product"
+          },
+          {
+            "type": "product"
+          },
+          {
+            "type": "product"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}
