@@ -644,60 +644,57 @@
     
     const formData = new FormData(elements.addToCartForm);
     const variantId = formData.get('id');
-    const quantity = parseInt(formData.get('quantity'));
-    
-    if (!variantId) {
-      showNotification('Please select all options before adding to cart', 'error');
-      return;
-    }
+    const quantity = parseInt(formData.get('quantity'), 10);
     
     try {
-      const result = await addItemToCart(variantId, quantity);
-      await handleWinterJacketLogic(result, quantity);
+      // Check if selected variant has Black and Medium options
+      const selectedVariant = currentProduct.variants.find(v => v.id.toString() === variantId);
+      const hasBlackAndMedium = selectedVariant && 
+        selectedVariant.options.some(opt => opt.toLowerCase() === 'black') && 
+        selectedVariant.options.some(opt => opt.toLowerCase() === 'medium');
       
+      // Add selected product to cart
+      await fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          items: [{
+            id: variantId,
+            quantity: quantity
+          }]
+        })
+      }).then(res => res.json());
+
+      // If Black and Medium variant selected, add winter jacket
+      if (hasBlackAndMedium) {
+        const winterJacket = await fetch('/products/soft-winter-jacket.js')
+          .then(res => res.json());
+        
+        const defaultVariant = winterJacket.variants[0];
+        
+        await fetch('/cart/add.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            items: [{
+              id: defaultVariant.id,
+              quantity: quantity
+            }]
+          })
+        }).then(res => res.json());
+      }
+
+      // Update cart count and show success message
+      updateCartCount();
+      showNotification('Products added to cart successfully!', 'success');
       closeModal();
-      await refreshCart();
-      showNotification('Item added to cart successfully!', 'success');
     } catch (error) {
       console.error('Error adding to cart:', error);
-      showNotification('Error adding item to cart', 'error');
-    }
-  }
-
-  /**
-   * Add item to cart
-   * @param {string} variantId - Variant ID
-   * @param {number} quantity - Quantity to add
-   * @returns {Promise<Object>} Cart addition result
-   */
-  async function addItemToCart(variantId, quantity) {
-    const response = await fetch('/cart/add.js', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        items: [{
-          id: variantId,
-          quantity: quantity
-        }]
-      })
-    });
-
-    if (!response.ok) throw new Error('Failed to add item to cart');
-    return response.json();
-  }
-
-  /**
-   * Handle winter jacket auto-add logic
-   * @param {Object} result - Cart addition result
-   * @param {number} quantity - Quantity to match
-   */
-  async function handleWinterJacketLogic(result, quantity) {
-    const selectedVariant = result.items[0];
-    if (selectedVariant.variant_options.includes('Black') && 
-        selectedVariant.variant_options.includes('Medium')) {
-      
-      const winterJacket = await fetchProductData(config.winterJacketHandle);
-      await addItemToCart(winterJacket.variants[0].id, quantity);
+      showNotification('Error adding to cart. Please try again.', 'error');
     }
   }
 

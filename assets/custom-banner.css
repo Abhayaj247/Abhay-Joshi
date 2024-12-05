@@ -1,8 +1,12 @@
+/* Import fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
 .banner-section {
   position: relative;
-  padding: 40px;
+  padding: 60px 80px;
   background: #ffffff;
   overflow: hidden;
+  font-family: 'Montserrat', sans-serif;
 }
 
 /* Header Styles */
@@ -10,41 +14,43 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 60px;
+  margin-bottom: 80px;
 }
 
 .logo {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 600;
   color: #000;
   margin: 0;
-  padding: 8px;
+  padding: 12px 16px;
   border: 2px solid #ff0000;
+  letter-spacing: -0.02em;
 }
 
 .tagline {
-  font-size: 18px;
+  font-size: 20px;
   color: #000;
   margin: 0;
-  padding: 8px;
+  padding: 12px 16px;
   border: 2px solid #ff0000;
 }
 
 .choose-gift-btn {
   background: #ffeb3b;
   border: none;
-  padding: 12px 24px;
-  font-size: 16px;
+  padding: 16px 32px;
+  font-size: 18px;
   font-weight: 500;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
-  transition: transform 0.3s ease;
+  gap: 12px;
+  transition: all 0.3s ease;
 }
 
 .choose-gift-btn:hover {
-  transform: translateX(5px);
+  transform: translateX(8px);
+  background: #ffd700;
 }
 
 /* Content Styles */
