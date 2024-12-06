@@ -1,0 +1,275 @@
+/* Import fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+.banner-section {
+  position: relative;
+  padding: 60px 80px;
+  background: #ffffff;
+  overflow: hidden;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Header Styles */
+.banner-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 80px;
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: 600;
+  color: #000;
+  margin: 0;
+  padding: 12px 16px;
+  border: 2px solid #ff0000;
+  letter-spacing: -0.02em;
+}
+
+.tagline {
+  font-size: 20px;
+  color: #000;
+  margin: 0;
+  padding: 12px 16px;
+  border: 2px solid #ff0000;
+}
+
+.choose-gift-btn {
+  background: #ffeb3b;
+  border: none;
+  padding: 16px 32px;
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+}
+
+.choose-gift-btn:hover {
+  transform: translateX(8px);
+  background: #ffd700;
+}
+
+/* Content Styles */
+.banner-content {
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.gift-guide-title {
+  font-size: 48px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 30px;
+  padding: 10px;
+  border: 2px solid #ff0000;
+  display: inline-block;
+}
+
+.gift-guide-description {
+  margin-bottom: 40px;
+  padding: 15px;
+  border: 2px solid #ff0000;
+}
+
+.gift-guide-description p {
+  font-size: 18px;
+  line-height: 1.6;
+  color: #000;
+  margin: 0;
+}
+
+.shop-now-container {
+  margin-bottom: 60px;
+}
+
+.shop-now-btn {
+  background: #000;
+  color: #fff;
+  padding: 15px 40px;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: transform 0.3s ease;
+}
+
+.shop-now-btn:hover {
+  transform: translateX(5px);
+}
+
+.arrow {
+  font-size: 20px;
+  transition: transform 0.3s ease;
+}
+
+.shop-now-btn:hover .arrow {
+  transform: translateX(5px);
+}
+
+/* Footer Styles */
+.banner-footer {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.sustainability-text {
+  display: inline-block;
+  font-size: 14px;
+  text-transform: uppercase;
+  color: #000;
+  padding: 8px;
+  border: 2px solid #ff0000;
+}
+
+/* Illustration Grid */
+.illustration-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 768px) {
+  .banner-section {
+    padding: 20px;
+  }
+
+  .banner-header {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+
+  .gift-guide-title {
+    font-size: 36px;
+  }
+
+  .gift-guide-description p {
+    font-size: 16px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .gift-guide-title {
+    font-size: 28px;
+  }
+
+  .shop-now-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  left: -100%;
+  width: 80%;
+  max-width: 300px;
+  height: 100vh;
+  background: #ffffff;
+  z-index: 1000;
+  transition: left 0.3s ease;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+.mobile-menu.active {
+  left: 0;
+}
+.mobile-nav {
+  padding: 60px 20px 20px;
+}
+.mobile-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.mobile-nav li {
+  margin-bottom: 20px;
+}
+.mobile-nav a {
+  color: #000000;
+  text-decoration: none;
+  font-size: 18px;
+  display: block;
+  padding: 10px 0;
+}
+
+.mobile-menu-button {
+  display: none;
+  background: none;
+  border: none;
+  padding: 15px;
+  cursor: pointer;
+  z-index: 1001;
+}
+.menu-icon {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: #000000;
+  position: relative;
+  transition: background 0.3s ease;
+}
+.menu-icon::before,
+.menu-icon::after {
+  content: "";
+  position: absolute;
+  width: 24px;
+  height: 2px;
+  background: #000000;
+  left: 0;
+  transition: transform 0.3s ease;
+}
+.menu-icon::before {
+  top: -6px;
+}
+.menu-icon::after {
+  bottom: -6px;
+}
+
+.mobile-menu-button.active .menu-icon {
+  background: transparent;
+}
+.mobile-menu-button.active .menu-icon::after {
+  transform: rotate(-45deg);
+  bottom: 0;
+}
+
+.animated-button {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.animated-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.mobile-menu-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+.mobile-menu-overlay.active {
+  display: block;
+}
